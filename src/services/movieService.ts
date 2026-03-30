@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { Movie, FetchMoviesResponse } from '../types/movies'; 
+import type { Movie, FetchMoviesResponse } from '../types/movie'; 
 const API_KEY = import.meta.env.VITE_TMDB_TOKEN;
 
 
