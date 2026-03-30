@@ -1,11 +1,40 @@
-import css from './SearchBar.module.css';
+import { useEffect } from 'react';
+import { createPortal } from "react-dom";
+import css from './MovieModal.module.css';
 
-export default function MovieModal() {
+interface ModalProps {
+  onClose: () => void;
+  children: React.ReactNode;
+}
 
-    return (
-        <>
-        <div className={css.backdrop} role="dialog" aria-modal="true">
-  <div className={css.modal}>
+export default function MovieModal({ onClose, children }: ModalProps) {
+
+    const handleBackdropClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (event.target === event.currentTarget) {
+      onClose();
+    }
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+    };
+  }, [onClose]);
+
+
+    return createPortal(
+    <div className={css.backdrop} role="dialog" aria-modal="true" onClick={handleBackdropClick}>
+    <div className={css.modal}>
     <button className={css.closeButton} aria-label="Close modal">
       &times;
     </button>
@@ -24,9 +53,9 @@ export default function MovieModal() {
         <strong>Rating:</strong> movie_vote_average/10
       </p>
     </div>
-  </div>
-</div>
-
-        </>
+    </div>
+    {children}
+    </div>,
+    document.body
     );
 }
